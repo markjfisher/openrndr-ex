@@ -5,7 +5,8 @@ import org.gradle.nativeplatform.platform.internal.DefaultOperatingSystem
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.utils.addToStdlib.ifTrue
 
-val applicationMainClass = "TemplateProgramKt"
+// With no "class X {...", just add "Kt" to the end of the class file name
+val applicationMainClass = "fish.ExampleAppKt"
 
 /**  ## additional ORX features to be added to this project */
 val orxFeatures = setOf(
@@ -77,6 +78,11 @@ val openrndrFeatures = setOfNotNull(
     if (DefaultNativePlatform("current").architecture.name != "arm-v8") "video" else null
 )
 
+/** ## configure the type of logging this project uses */
+enum class Logging { NONE, SIMPLE, FULL }
+
+val applicationLogging = Logging.FULL
+
 @Suppress(
     "DSL_SCOPE_VIOLATION",
     "MISSING_DEPENDENCY_CLASS",
@@ -94,9 +100,25 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
 
     // logging
+    // runtimeOnly(libs.slf4j.api)
     implementation(libs.kotlin.logging)
-    implementation(libs.logback.classic)
-    implementation(libs.jul2slf4j)
+    when (applicationLogging) {
+        Logging.NONE -> {
+            implementation(libs.slf4j.nop)
+        }
+        Logging.SIMPLE -> {
+            implementation(libs.slf4j.simple)
+        }
+        Logging.FULL -> {
+            // can't get full logging to work, throws errors about missing java.beans.PropertyChangeEvent when run in the exe version, ok in IDE!
+            implementation(libs.log4j.slf4j)
+//            implementation(libs.logback.classic)
+//            implementation(libs.jul2slf4j)
+//            implementation(libs.logstash)
+            implementation(libs.jackson.databind)
+            implementation(libs.jackson.json)
+        }
+    }
 }
 
 application {
@@ -109,16 +131,15 @@ tasks {
         manifest {
             attributes["Main-Class"] = applicationMainClass
         }
-        minimize {
-            exclude(dependency("org.openrndr:openrndr-gl3:.*"))
-            exclude(dependency("org.jetbrains.kotlin:kotlin-reflect:.*"))
-        }
+//        minimize {
+//            exclude(dependency("org.openrndr:openrndr-gl3:.*"))
+//            exclude(dependency("org.jetbrains.kotlin:kotlin-reflect:.*"))
+//        }
     }
 
     named<JPackageTask>("jpackage") {
         doLast {
             val os: DefaultOperatingSystem = DefaultNativePlatform.getCurrentOperatingSystem()
-            println("including data for ${os.toFamilyName()}")
             when (val name = os.toFamilyName()) {
                 OperatingSystemFamily.WINDOWS, OperatingSystemFamily.LINUX -> {
                     copy {

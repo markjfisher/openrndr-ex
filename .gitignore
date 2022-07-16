@@ -13,3 +13,4 @@ dist
 .classpath
 
 target
+application.log

@@ -1,6 +1,7 @@
 [versions]
 
 # Libraries
+beryx-runtime = "1.12.7"
 gson = "2.9.0"
 jackson = "2.13.3"
 kotlin = "1.6.21"
@@ -9,14 +10,15 @@ shadow = "7.1.2"
 openrndr = "0.4.0"
 orx = "0.4.0-1"
 orml = "0.4.0"
-beryx-runtime = "1.12.7"
 
 # logging
-julToSlf4j = "1.7.36"
 jsoup = "1.14.3"
-kotlin-logging = "2.1.23"
+julToSlf4j = "1.7.36"
+log4j = "2.17.2"
 logback-classic = "1.2.11"
 logback-encoder = "7.2"
+kotlin-logging = "2.1.23"
+slf4j = "1.7.25"
 
 # testing
 assertj = "3.23.1"
@@ -37,6 +39,10 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 # logging libs
 kotlin-logging = { module = "io.github.microutils:kotlin-logging", version.ref = "kotlin-logging" }
+log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j-impl", version.ref = "log4j" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-nop = { module = "org.slf4j:slf4j-nop", version.ref = "slf4j" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
 jul2slf4j = { module = "org.slf4j:jul-to-slf4j", version.ref = "julToSlf4j" }
 logstash = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logback-encoder" }
