@@ -1,11 +1,17 @@
 package fish
 
 import mu.KotlinLogging
+import org.openrndr.Fullscreen
 import org.openrndr.application
+import org.openrndr.color.ColorHSLa
+import org.openrndr.color.ColorHSVa
 import org.openrndr.color.ColorRGBa
+import org.openrndr.color.ColorXSLa
+import org.openrndr.color.ColorXSVa
 import org.openrndr.draw.loadFont
 import org.openrndr.draw.loadImage
 import org.openrndr.draw.tint
+import org.openrndr.shape.Rectangle
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -14,25 +20,50 @@ private val logger = KotlinLogging.logger {}
 // simplified runner definition
 fun main() = application {
     configure {
-        width = 768
-        height = 576
+        width = 770
+        height = 672
+        title = "Mark's first demo"
+        windowResizable = true
     }
 
     program {
-        logger.info { "in program" }
-        val image = loadImage("data/images/pm5544.png")
-        val font = loadFont("data/fonts/default.otf", 64.0)
-
         extend {
-            drawer.drawStyle.colorMatrix = tint(ColorRGBa.WHITE.shade(0.2))
-            drawer.image(image)
+            drawer.stroke = null
 
-            drawer.fill = ColorRGBa.PINK
-            drawer.circle(cos(seconds) * width / 2.0 + width / 2.0, sin(0.5 * seconds) * height / 2.0 + height / 2.0, 140.0)
+            // -- draw hsv swatches
+            for (j in 0..7) {
+                for (i in 0..31) {
+                    drawer.fill = ColorHSVa(360 * (i / 31.0), 0.7, 0.125 + j / 8.0).toRGBa()
+                    drawer.rectangle(35.0 + (700 / 32.0) * i, 32.0 + j * 16.0, (700 / 32.0), 16.0)
+                }
+            }
 
-            drawer.fontMap = font
-            drawer.fill = ColorRGBa.WHITE
-            drawer.text("OPENRNDR", width / 2.0, height / 2.0)
+            // -- draw hsl swatches
+            drawer.translate(0.0, 160.0)
+            for (j in 0..7) {
+                for (i in 0..31) {
+                    drawer.fill = ColorHSLa(360 * (i / 31.0), 0.7, 0.125 + j / 9.0).toRGBa()
+                    drawer.rectangle(35.0 + (700 / 32.0) * i, 32.0 + j * 16.0, (700 / 32.0), 16.0)
+                }
+            }
+
+            // -- draw xsv (Kuler) swatches
+            drawer.translate(0.0, 160.0)
+            for (j in 0..7) {
+                for (i in 0..31) {
+                    drawer.fill = ColorXSVa(360 * (i / 31.0), 0.7, 0.125 + j / 8.0).toRGBa()
+                    drawer.rectangle(35.0 + (700 / 32.0) * i, 32.0 + j * 16.0, (700 / 32.0), 16.0)
+                }
+            }
+
+            // -- draw xsl (Kuler) swatches
+            drawer.translate(0.0, 160.0)
+            for (j in 0..7) {
+                for (i in 0..31) {
+                    drawer.fill = ColorXSLa(360 * (i / 31.0), 0.7, 0.125 + j / 9.0, 1.0).toRGBa()
+                    drawer.rectangle(35.0 + (700 / 32.0) * i, 32.0 + j * 16.0, (700 / 32.0), 16.00)
+                }
+            }
         }
     }
 }
